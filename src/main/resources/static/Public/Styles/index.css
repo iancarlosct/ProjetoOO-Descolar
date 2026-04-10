@@ -1,0 +1,189 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f5f7;
+}
+
+/* Cabeçalho */
+.top-header {
+    background-color: #ffffff;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4a148c;
+}
+
+.btn-login-nav {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.btn-login-nav:hover {
+    background-color: #f0f0f0;
+}
+
+/* Menu de Categorias */
+.category-menu {
+    background-color: #ffffff;
+    padding: 15px 40px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.category-menu ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.category-menu li {
+    color: #666;
+    cursor: pointer;
+    padding-bottom: 5px;
+    font-weight: 500;
+}
+
+.category-menu li.active {
+    color: #4a148c;
+    border-bottom: 3px solid #4a148c;
+}
+
+/* Área Principal e Dashboard */
+.dashboard-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Caixa de Busca */
+.search-box {
+    background-color: #3b1178;
+    border-radius: 12px;
+    padding: 25px;
+    color: white;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.trip-types button {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.trip-types button.active {
+    background-color: white;
+    color: #3b1178;
+    font-weight: bold;
+}
+
+/* Formulário de Busca */
+.search-form {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    gap: 10px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 0 10px;
+    border-right: 1px solid #ddd;
+}
+
+.input-group:last-of-type {
+    border-right: none;
+}
+
+.input-group label {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    width: 100%;
+}
+
+.swap-icon {
+    color: #666;
+    font-size: 20px;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.btn-search {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-search:hover {
+    background-color: #d32f2f;
+}
+
+/* Widgets Customizáveis */
+.widgets-area {
+    display: flex;
+    gap: 20px;
+}
+
+.widget-card {
+    flex: 1;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: white;
+}
+
+.promo-1 { background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); color: #333;}
+.promo-2 { background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); color: #333;}
+.promo-3 { background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Voos</title>
+    <link rel="stylesheet" href="Public/Styles/index.css">
+</head>
+<body>
+<header class="top-header">
+    <div class="logo">MeuVoo</div>
+    <div class="user-actions">
+        <a href="Public/login.html" class="btn-login-nav">Entrar / Cadastrar</a>
+    </div>
+</header>
+
+<nav class="category-menu">
+    <ul>
+        <li>Hospedagens</li>
+        <li class="active">Passagens</li>
+        <li>Pacotes</li>
+        <li>Ofertas</li>
+        <li>Aluguel de Carros</li>
+    </ul>
+</nav>
+
+<main class="dashboard-container">
+    <section class="search-box">
+        <div class="search-header">
+            <h2>Passagens aéreas</h2>
+            <div class="trip-types">
+                <button class="active">Ida e volta</button>
+                <button>Só ida</button>
+                <button>Multidestino</button>
+            </div>
+        </div>
+
+        <form id="flightSearchForm" class="search-form">
+            <div class="input-group">
+                <label for="from">Origem</label>
+                <input type="text" id="from" name="from" placeholder="Insira sua cidade de origem" required>
+            </div>
+
+            <div class="swap-icon">⇄</div>
+
+            <div class="input-group">
+                <label for="to">Destino</label>
+                <input type="text" id="to" name="to" placeholder="Insira a cidade de destino" required>
+            </div>
+
+            <div class="input-group">
+                <label for="date">Data de Ida</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <div class="input-group">
+                <label for="passengers">Passageiros e Classe</label>
+                <input type="text" id="passengers" value="1 pessoa, Econômica" readonly>
+            </div>
+
+            <button type="submit" class="btn-search">Buscar</button>
+        </form>
+    </section>
+
+    <section class="widgets-area">
+        <div class="widget-card promo-1">
+            <h3>Ofertas Recife</h3>
+            <p>A partir de R$ 174</p>
+        </div>
+        <div class="widget-card promo-2">
+            <h3>Voos Santiago</h3>
+            <p>A partir de R$ 710</p>
+        </div>
+        <div class="widget-card promo-3">
+            <h3>Buenos Aires</h3>
+            <p>A partir de R$ 947</p>
+        </div>
+    </section>
+</main>
+
+<script src="Public/Scripts/index.js"></script>
+</body>
+</html>
