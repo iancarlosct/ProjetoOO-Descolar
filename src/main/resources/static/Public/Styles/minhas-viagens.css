@@ -198,3 +198,19 @@
     .reserva-acoes { flex-direction: column; }
     .btn-detalhes, .btn-checkin, .btn-cancelar-reserva { width: 100%; text-align: center; }
 }
+
+.btn-simular-reembolso {
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    color: #92400e;
+    padding: 0.5rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-simular-reembolso:hover {
+    background: #fde68a;
+}

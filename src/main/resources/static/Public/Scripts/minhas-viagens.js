@@ -82,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${checkinDisponivel && reserva.status !== 'Cancelada' ?
                         `<button class="btn-checkin" data-index="${index}">Fazer check-in</button>` : ''}
                     ${reserva.status === 'Confirmada' ?
+                        `<button class="btn-simular-reembolso" data-index="${index}">💰 Simular reembolso</button>` : ''}
+                    ${reserva.status === 'Confirmada' ?
                         `<button class="btn-cancelar-reserva" data-index="${index}">Cancelar reserva</button>` : ''}
                 </div>
             </div>
@@ -111,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (e) => {
             const index = e.target.dataset.index;
             const reserva = historico[index];
-            // Redirecionar para página de check-in passando o localizador
             window.location.href = `checkin.html?localizador=${reserva.localizador}`;
         });
     });
@@ -126,6 +127,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Reserva cancelada.');
                 window.location.reload();
             }
+        });
+    });
+
+    // Listener para o botão "Simular reembolso"
+    document.querySelectorAll('.btn-simular-reembolso').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const index = e.target.dataset.index;
+            const reserva = historico[index];
+            if (reserva.status !== 'Confirmada') {
+                alert('Apenas reservas confirmadas podem ser reembolsadas.');
+                return;
+            }
+            window.location.href = `reembolso.html?localizador=${reserva.localizador}`;
         });
     });
 });

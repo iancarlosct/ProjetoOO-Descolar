@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeuVoo · Simulador de Reembolso</title>
+    <link rel="stylesheet" href="Styles/index.css">
+    <link rel="stylesheet" href="Styles/reembolso.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app-wrapper">
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">MeuVoo</div>
+            <div class="user-area" id="authHeaderArea"></div>
+        </div>
+    </header>
+
+    <nav class="nav-bar">
+        <ul class="nav-links">
+            <li><a href="../index.html">Passagens</a></li>
+            <li><a href="carrinho.html">Carrinho</a></li>
+            <li><a href="checkin.html">Check-in</a></li>
+            <li><a href="minhas-viagens.html">Minhas viagens</a></li>
+            <li><a href="ofertas.html">Ofertas</a></li>
+            <li><a href="ajuda.html">Ajuda</a></li>
+        </ul>
+    </nav>
+
+    <main class="reembolso-main">
+        <div class="reembolso-container">
+            <h1 class="reembolso-titulo">Simulador de Reembolso</h1>
+            <div id="detalhesReserva" class="detalhes-reserva"></div>
+            <div id="simulacaoReembolso" class="simulacao-reembolso" style="display: none;">
+                <div class="resultado-simulacao">
+                    <h2>Valor estimado de reembolso</h2>
+                    <p class="valor-reembolso" id="valorReembolso">R$ 0,00</p>
+                    <p class="detalhe-calculo" id="detalheCalculo"></p>
+                </div>
+                <div class="reembolso-acoes">
+                    <button class="btn-cancelar-reembolso" id="btnCancelarReembolso">Cancelar operação</button>
+                    <button class="btn-confirmar-reembolso" id="btnConfirmarReembolso">Confirmar cancelamento e reembolso</button>
+                </div>
+            </div>
+            <div id="mensagemFeedback" class="mensagem-feedback"></div>
+        </div>
+    </main>
+</div>
+
+<script src="Scripts/auth-header.js"></script>
+<script src="Scripts/reembolso.js"></script>
+</body>
+</html>
