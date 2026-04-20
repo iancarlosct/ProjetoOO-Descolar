@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const historico = JSON.parse(localStorage.getItem('historicoReservas')) || [];
+    const chaveHistorico = `historicoReservas_${usuarioLogado.id}`;
+    const historico = JSON.parse(localStorage.getItem(chaveHistorico)) || [];
     let reservaAtual = null;
 
     const buscaDiv = document.getElementById('buscaReserva');
@@ -35,13 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function mostrarDetalhes(reserva) {
+        if (reserva.status === 'Cancelada') {
+            exibirMensagem('Esta reserva foi cancelada e não pode mais realizar check‑in.', 'erro');
+            buscaDiv.style.display = 'block';
+            detalhesDiv.style.display = 'none';
+            return;
+        }
+
         reservaAtual = reserva;
         buscaDiv.style.display = 'none';
         detalhesDiv.style.display = 'block';
         mensagemDiv.innerHTML = '';
-
-        const origemNome = siglaParaCidade[reserva.from] || reserva.from;
-        const destinoNome = siglaParaCidade[reserva.to] || reserva.to;
 
         document.getElementById('origemVoo').textContent = reserva.from;
         document.getElementById('destinoVoo').textContent = reserva.to;
@@ -50,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('horarioVoo').textContent = reserva.departure || '08:00 - 10:30';
         document.getElementById('portao').textContent = reserva.portao || 'A definir';
 
-        // Lista de passageiros
         const listaPassageiros = document.getElementById('listaPassageirosCheckin');
         listaPassageiros.innerHTML = '';
         reserva.passengers.forEach((p, i) => {
@@ -59,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
             listaPassageiros.appendChild(li);
         });
 
-        // Status do check‑in
         const statusSpan = document.getElementById('statusCheckin');
         const btnConfirmar = document.getElementById('btnConfirmarCheckin');
         const cartaoDiv = document.getElementById('cartaoEmbarque');
@@ -71,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnConfirmar.disabled = true;
             btnConfirmar.textContent = 'Check‑in já realizado';
             cartaoDiv.style.display = 'block';
-            preencherCartao(reserva);
+            preencherCartoes(reserva);
         } else {
             statusSpan.textContent = 'Check‑in disponível';
             statusSpan.style.background = '#dcfce7';
@@ -82,19 +85,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function preencherCartao(reserva) {
-        const primeiroPassageiro = reserva.passengers[0];
-        document.getElementById('ciaCartao').textContent = reserva.airline;
-        document.getElementById('vooCartao').textContent = reserva.flightId;
-        document.getElementById('passageiroCartao').textContent = primeiroPassageiro.nome;
-        document.getElementById('rotaCartao').textContent = `${reserva.from} → ${reserva.to}`;
-        document.getElementById('dataCartao').textContent = formatarData(reserva.date);
-        document.getElementById('horarioCartao').textContent = reserva.departure || '08:00';
-        document.getElementById('assentoCartao').textContent = primeiroPassageiro.assento || 'Aguardando';
-        document.getElementById('portaoCartao').textContent = reserva.portao || 'A definir';
+    function preencherCartoes(reserva) {
+        const cartaoContainer = document.getElementById('cartaoEmbarque');
+        let cartoesHtml = '<h3>🎫 Cartões de Embarque</h3>';
+        reserva.passengers.forEach((p, idx) => {
+            cartoesHtml += `
+                <div class="cartao-embarque-individual" style="margin-bottom: 2rem; border-top: 2px dashed #ccc; padding-top: 1rem;">
+                    <div class="cartao-header">
+                        <span class="cia-cartao">${reserva.airline}</span>
+                        <span class="voo-cartao">${reserva.flightId}</span>
+                    </div>
+                    <div class="cartao-passageiro">${p.nome}</div>
+                    <div class="cartao-rota">${reserva.from} → ${reserva.to}</div>
+                    <div class="cartao-info">
+                        <div><span>Data:</span> <span>${formatarData(reserva.date)}</span></div>
+                        <div><span>Horário:</span> <span>${reserva.departure || '08:00'}</span></div>
+                        <div><span>Assento:</span> <span>${p.assento || 'Aguardando'}</span></div>
+                        <div><span>Portão:</span> <span>${reserva.portao || 'A definir'}</span></div>
+                    </div>
+                    <div class="cartao-codigo">
+                        <div class="codigo-barras"></div>
+                    </div>
+                </div>
+            `;
+        });
+        cartaoContainer.innerHTML = cartoesHtml;
     }
 
-    // Se veio localizador pela URL, busca automaticamente
     if (localizadorUrl) {
         const reservaEncontrada = historico.find(r => r.localizador === localizadorUrl.toUpperCase());
         if (reservaEncontrada) {
@@ -104,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Busca manual
     formCheckin.addEventListener('submit', (e) => {
         e.preventDefault();
         const localizador = document.getElementById('localizador').value.trim().toUpperCase();
@@ -113,6 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const reserva = historico.find(r => r.localizador === localizador);
         if (!reserva) {
             exibirMensagem('Reserva não encontrada.', 'erro');
+            return;
+        }
+        if (reserva.status === 'Cancelada') {
+            exibirMensagem('Esta reserva foi cancelada e não pode realizar check‑in.', 'erro');
             return;
         }
 
@@ -125,22 +145,21 @@ document.addEventListener('DOMContentLoaded', () => {
         mostrarDetalhes(reserva);
     });
 
-    // Confirmar check‑in
     document.getElementById('btnConfirmarCheckin').addEventListener('click', () => {
         if (!reservaAtual) return;
+        if (reservaAtual.status === 'Cancelada') {
+            exibirMensagem('Reserva cancelada não pode realizar check‑in.', 'erro');
+            return;
+        }
 
-        // Atribuir portão aleatório (simulação)
         reservaAtual.portao = `A${Math.floor(Math.random() * 20) + 1}`;
         reservaAtual.status = 'Check‑in realizado';
 
-        // Salvar no histórico
-        localStorage.setItem('historicoReservas', JSON.stringify(historico));
-
-        exibirMensagem('Check‑in realizado com sucesso! Bom voo! ✈️', 'sucesso');
+        localStorage.setItem(chaveHistorico, JSON.stringify(historico));
+        exibirMensagem('Check‑in realizado com sucesso para todos os passageiros! Bom voo! ✈️', 'sucesso');
         mostrarDetalhes(reservaAtual);
     });
 
-    // Buscar outra reserva
     document.getElementById('btnBuscarOutro').addEventListener('click', () => {
         buscaDiv.style.display = 'block';
         detalhesDiv.style.display = 'none';

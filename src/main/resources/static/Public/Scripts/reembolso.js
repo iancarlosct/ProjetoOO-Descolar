@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const historico = JSON.parse(localStorage.getItem('historicoReservas')) || [];
+    const chaveHistorico = `historicoReservas_${usuarioLogado.id}`;
+    const historico = JSON.parse(localStorage.getItem(chaveHistorico)) || [];
     const reserva = historico.find(r => r.localizador === localizador);
     if (!reserva) {
         alert('Reserva não encontrada.');
@@ -28,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Exibir detalhes da reserva
     const siglaParaCidade = {
         'GRU': 'São Paulo', 'CGH': 'São Paulo (Congonhas)', 'GIG': 'Rio de Janeiro',
         'BSB': 'Brasília', 'SSA': 'Salvador', 'REC': 'Recife', 'FOR': 'Fortaleza',
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         Valor total pago: ${reserva.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
     `;
 
-    // Calcular reembolso
     const hoje = new Date();
     const dataVoo = new Date(reserva.date);
     const diffDias = Math.ceil((dataVoo - hoje) / (1000 * 60 * 60 * 24));
@@ -74,12 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('detalheCalculo').textContent = `${descricao} (${(percentualReembolso * 100).toFixed(0)}% do valor total)`;
     document.getElementById('simulacaoReembolso').style.display = 'block';
 
-    // Botão cancelar operação
     document.getElementById('btnCancelarReembolso').addEventListener('click', () => {
         window.location.href = 'minhas-viagens.html';
     });
 
-    // Confirmar reembolso
     document.getElementById('btnConfirmarReembolso').addEventListener('click', () => {
         if (percentualReembolso === 0) {
             alert('Não há valor a ser reembolsado. Deseja cancelar a reserva mesmo assim?');
@@ -87,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm(`Confirmar cancelamento e reembolso de ${valorReembolso.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}?`)) {
             reserva.status = 'Cancelada';
             reserva.valorReembolsado = valorReembolso;
-            localStorage.setItem('historicoReservas', JSON.stringify(historico));
+            localStorage.setItem(chaveHistorico, JSON.stringify(historico));
             alert('Reserva cancelada com sucesso. O valor será estornado em até 7 dias úteis.');
             window.location.href = 'minhas-viagens.html';
         }

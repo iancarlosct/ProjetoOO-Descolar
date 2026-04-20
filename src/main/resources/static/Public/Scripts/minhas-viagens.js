@@ -6,7 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const historico = JSON.parse(localStorage.getItem('historicoReservas')) || [];
+    // 🔧 Usar chave específica do usuário
+    const chaveHistorico = `historicoReservas_${usuarioLogado.id}`;
+    const historico = JSON.parse(localStorage.getItem(chaveHistorico)) || [];
+
     const listaDiv = document.getElementById('listaViagens');
     const vazioDiv = document.getElementById('mensagemVazio');
 
@@ -18,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     vazioDiv.style.display = 'none';
 
-    // Mapeamento para exibição de cidades
     const siglaParaCidade = {
         'GRU': 'São Paulo', 'CGH': 'São Paulo (Congonhas)', 'VCP': 'Campinas',
         'GIG': 'Rio de Janeiro', 'SDU': 'Rio de Janeiro (Santos Dumont)',
@@ -31,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let html = '';
 
-    // Ordenar do mais recente para o mais antigo
     historico.sort((a, b) => new Date(b.dataReserva) - new Date(a.dataReserva));
 
     historico.forEach((reserva, index) => {
@@ -42,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const classe = reserva.flightClass === 'ECONOMICA' ? 'Econômica' : 'Executiva';
         const numPassageiros = reserva.passengers.length;
 
-        // Construir lista de passageiros resumida
         let passageirosHtml = '';
         reserva.passengers.forEach((p, i) => {
             passageirosHtml += `
@@ -53,11 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Verificar se o check-in está disponível (data do voo é hoje ou amanhã, por exemplo)
         const dataVoo = new Date(reserva.date);
         const hoje = new Date();
         const diffDias = Math.floor((dataVoo - hoje) / (1000 * 60 * 60 * 24));
-        const checkinDisponivel = diffDias >= 0 && diffDias <= 2; // até 2 dias antes
+        const checkinDisponivel = diffDias >= 0 && diffDias <= 2;
 
         html += `
             <div class="reserva-card" data-index="${index}">
@@ -92,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     listaDiv.innerHTML = html;
 
-    // Event listeners
     document.querySelectorAll('.btn-detalhes').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const index = e.target.dataset.index;
@@ -123,14 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('Tem certeza que deseja cancelar esta reserva? Esta ação não pode ser desfeita.')) {
                 const reserva = historico[index];
                 reserva.status = 'Cancelada';
-                localStorage.setItem('historicoReservas', JSON.stringify(historico));
+                localStorage.setItem(chaveHistorico, JSON.stringify(historico));
                 alert('Reserva cancelada.');
                 window.location.reload();
             }
         });
     });
 
-    // Listener para o botão "Simular reembolso"
     document.querySelectorAll('.btn-simular-reembolso').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const index = e.target.dataset.index;
