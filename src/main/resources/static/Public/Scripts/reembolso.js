@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const localizador = urlParams.get('localizador');
     if (!localizador) {
@@ -46,44 +46,26 @@ document.addEventListener('DOMContentLoaded', () => {
         Valor total pago: ${reserva.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
     `;
 
-    const hoje = new Date();
-    const dataVoo = new Date(reserva.date);
-    const diffDias = Math.ceil((dataVoo - hoje) / (1000 * 60 * 60 * 24));
+    try {
+        const response = await fetch(`http://localhost:8080/api/reembolso/calcular?dataVoo=${reserva.date}&valorTotal=${reserva.totalPrice}`);
+        if (!response.ok) throw new Error('Erro ao calcular reembolso');
+        const data = await response.json();
 
-    let percentualReembolso = 0;
-    let descricao = '';
-
-    if (diffDias >= 7) {
-        percentualReembolso = 0.90;
-        descricao = 'Cancelamento com mais de 7 dias de antecedência: 90% de reembolso.';
-    } else if (diffDias >= 2) {
-        percentualReembolso = 0.50;
-        descricao = 'Cancelamento entre 2 e 7 dias de antecedência: 50% de reembolso.';
-    } else if (diffDias >= 0) {
-        percentualReembolso = 0.0;
-        descricao = 'Cancelamento com menos de 2 dias de antecedência: sem reembolso.';
-    } else {
-        percentualReembolso = 0.0;
-        descricao = 'O voo já ocorreu. Não há reembolso.';
+        document.getElementById('valorReembolso').textContent = data.valorReembolso.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('detalheCalculo').textContent = `${data.descricao} (${(data.percentual * 100).toFixed(0)}% do valor total)`;
+        document.getElementById('simulacaoReembolso').style.display = 'block';
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao calcular reembolso. Tente novamente.');
     }
-
-    const valorReembolso = reserva.totalPrice * percentualReembolso;
-
-    document.getElementById('valorReembolso').textContent = valorReembolso.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    document.getElementById('detalheCalculo').textContent = `${descricao} (${(percentualReembolso * 100).toFixed(0)}% do valor total)`;
-    document.getElementById('simulacaoReembolso').style.display = 'block';
 
     document.getElementById('btnCancelarReembolso').addEventListener('click', () => {
         window.location.href = 'minhas-viagens.html';
     });
 
     document.getElementById('btnConfirmarReembolso').addEventListener('click', () => {
-        if (percentualReembolso === 0) {
-            alert('Não há valor a ser reembolsado. Deseja cancelar a reserva mesmo assim?');
-        }
-        if (confirm(`Confirmar cancelamento e reembolso de ${valorReembolso.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}?`)) {
+        if (confirm(`Confirmar cancelamento e reembolso?`)) {
             reserva.status = 'Cancelada';
-            reserva.valorReembolsado = valorReembolso;
             localStorage.setItem(chaveHistorico, JSON.stringify(historico));
             alert('Reserva cancelada com sucesso. O valor será estornado em até 7 dias úteis.');
             window.location.href = 'minhas-viagens.html';
