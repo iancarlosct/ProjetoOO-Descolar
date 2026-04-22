@@ -4,7 +4,7 @@
  * Gerencia a exibição dinâmica do cabeçalho de autenticação em todas as páginas.
  * Verifica se há um usuário logado (armazenado no localStorage) e exibe
  * uma saudação com botão de logout ou o link para login/cadastro, conforme o estado.
- * O logout limpa todas as chaves relacionadas ao usuário para evitar vazamento de dados.
+ * O logout remove apenas a sessão atual e o carrinho, mantendo o histórico de reservas.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,10 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         document.getElementById('btnLogout').addEventListener('click', (e) => {
             e.preventDefault();
-            // Remove TODAS as informações do usuário atual para evitar cruzamento de dados
+            // Remove apenas a sessão e o carrinho (dados temporários)
             localStorage.removeItem('usuarioMeuVoo');
-            localStorage.removeItem('carrinhoMeuVoo');      // carrinho de compras
-            localStorage.removeItem(`historicoReservas_${usuario.id}`); // histórico da conta atual
+            localStorage.removeItem('carrinhoMeuVoo');
+            // O histórico de reservas permanece salvo para quando o usuário fizer login novamente
             window.location.href = isInPublicFolder ? '../index.html' : 'index.html';
         });
     } else {
